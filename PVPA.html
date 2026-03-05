@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Class: Object Pronouns</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #4338ca;
+            --accent: #818cf8;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: #1e293b;
+            line-height: 1.5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 { text-align: center; color: var(--secondary); font-size: 2.5rem; margin-bottom: 0.5em; }
+        .subtitle { text-align: center; color: #64748b; margin-bottom: 2rem; }
+        
+        h2 { 
+            background: var(--primary); 
+            color: white; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-top: 40px; 
+            font-size: 1.5rem;
+        }
+
+        /* Grid para las preguntas (2 columnas) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        @media (min-width: 768px) {
+            .grid-container { grid-template-columns: 1fr 1fr; }
+        }
+
+        .question-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .question-card:hover { border-color: var(--accent); }
+        
+        /* Inputs y Selects */
+        input[type="text"], select {
+            padding: 6px 10px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.2s;
+            background: #f1f5f9;
+        }
+        input[type="text"]:focus, select:focus { border-color: var(--primary); background: white; }
+
+        /* Radio Buttons customizados */
+        .radio-group label {
+            display: inline-block;
+            margin-right: 10px;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid transparent;
+        }
+        .radio-group label:hover { background-color: #eef2ff; }
+
+        /* Botones de acción */
+        .controls {
+            position: sticky;
+            bottom: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            backdrop-filter: blur(5px);
+            margin-top: 40px;
+            border-radius: 0 0 16px 16px;
+        }
+
+        button {
+            padding: 14px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.1s;
+        }
+        
+        button:active { transform: scale(0.98); }
+        
+        #checkBtn { background: var(--primary); color: white; }
+        #checkBtn:hover { background: var(--secondary); }
+        
+        #resetBtn { background: #64748b; color: white; margin-left: 15px; display: none; }
+
+        /* Estados de validación */
+        .correct { border-left: 5px solid var(--success) !important; background-color: #f0fdf4 !important; }
+        .incorrect { border-left: 5px solid var(--error) !important; background-color: #fef2f2 !important; }
+        
+        .msg { display: block; font-size: 0.85rem; margin-top: 5px; font-weight: bold; min-height: 20px; }
+        .msg-correct { color: var(--success); }
+        .msg-incorrect { color: var(--error); }
+
+        /* Tabla Referencia */
+        .ref-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 0.9rem; }
+        .ref-table th { background: var(--primary); color: white; padding: 8px; }
+        .ref-table td { border: 1px solid #e2e8f0; padding: 8px; text-align: center; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🇬🇧 Object Pronouns Master Class</h1>
+    <p class="subtitle">60 Ejercicios Interactivos. Completa todo para dominar el tema.</p>
+
+    <details>
+        <summary style="cursor:pointer; color:var(--primary); margin-bottom:15px; font-weight:bold;">Ver Tabla de Ayuda (Cheat Sheet)</summary>
+        <table class="ref-table">
+            <tr><th>Subject</th><td>I</td><td>You</td><td>He</td><td>She</td><td>It</td><td>We</td><td>They</td></tr>
+            <tr><th>Object</th><td>Me</td><td>You</td><td>Him</td><td>Her</td><td>It</td><td>Us</td><td>Them</td></tr>
+        </table>
+    </details>
+
+    <form id="quizForm">
+        <h2>Part 1: Multiple Choice (20 Questions)</h2>
+        <div class="grid-container" id="section1"></div>
+
+        <h2>Part 2: Replace the noun (20 Questions)</h2>
+        <p style="margin-top:0; color:#666;">Selecciona el pronombre que reemplaza a las palabras en <b>negrita</b>.</p>
+        <div class="grid-container" id="section2"></div>
+
+        <h2>Part 3: Fill in the Blanks (20 Questions)</h2>
+        <p style="margin-top:0; color:#666;">Escribe el pronombre correcto. (him, her, it, them, us, me, you)</p>
+        <div class="grid-container" id="section3"></div>
+
+        <div class="controls">
+            <div id="score" style="font-size: 1.5rem; font-weight: bold; margin-bottom: 15px;"></div>
+            <button type="button" id="checkBtn" onclick="checkAll()">Corregir Todo</button>
+            <button type="button" id="resetBtn" onclick="location.reload()">Reiniciar</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // --- BASE DE DATOS DE PREGUNTAS ---
+
+    const section1Data = [
+        { q: "I can't see Mary. I can't see _____.", opts: ["he", "her", "she"], a: "her" },
+        { q: "Karen is next to Peter. Karen is next to _____.", opts: ["him", "he", "his"], a: "him" },
+        { q: "Can you help _____? We are lost.", opts: ["us", "we", "our"], a: "us" },
+        { q: "Drink your milk! Drink _____!", opts: ["it", "its", "them"], a: "it" },
+        { q: "We are going to the cinema. Come with _____.", opts: ["we", "us", "they"], a: "us" },
+        { q: "I don't know those girls. Do you know _____?", opts: ["they", "them", "their"], a: "them" },
+        { q: "I love this book. I read _____ every year.", opts: ["him", "it", "them"], a: "it" },
+        { q: "Where is Tom? I need to speak to _____.", opts: ["him", "he", "his"], a: "him" },
+        { q: "My mother is kind. Everybody likes _____.", opts: ["she", "her", "hers"], a: "her" },
+        { q: "The spiders are scary. I hate _____.", opts: ["they", "it", "them"], a: "them" },
+        { q: "This present is for _____ (you).", opts: ["your", "you", "yours"], a: "you" },
+        { q: "I am talking to you! Listen to _____!", opts: ["me", "I", "my"], a: "me" },
+        { q: "The car is dirty. He is washing _____.", opts: ["him", "it", "her"], a: "it" },
+        { q: "Paul and I are friends. Look at _____.", opts: ["us", "we", "them"], a: "us" },
+        { q: "This is my homework. Correct _____ please.", opts: ["it", "them", "her"], a: "it" },
+        { q: "Where are the keys? I can't find _____.", opts: ["it", "them", "they"], a: "them" },
+        { q: "Susan loves cats. She loves _____.", opts: ["them", "it", "they"], a: "them" },
+        { q: "He is looking at his watch. He is looking at _____.", opts: ["him", "it", "her"], a: "it" },
+        { q: "Wait for _____! I'm coming.", opts: ["I", "my", "me"], a: "me" },
+        { q: "Do you like apples? - I love _____.", opts: ["them", "it", "they"], a: "them" }
+    ];
+
+    const section2Data = [
+        { q: "I see <b>Mr. Smith</b> every day.", a: "him" },
+        { q: "I am waiting for <b>my sister</b>.", a: "her" },
+        { q: "Look at <b>the stars</b>!", a: "them" },
+        { q: "She is playing with <b>the ball</b>.", a: "it" },
+        { q: "He is talking to <b>me and you</b>.", a: "us" },
+        { q: "I don't like <b>dogs</b>.", a: "them" },
+        { q: "Can you see <b>the house</b>?", a: "it" },
+        { q: "Give the money to <b>John</b>.", a: "him" },
+        { q: "I am angry with <b>Helen</b>.", a: "her" },
+        { q: "Sit next to <b>Paul and me</b>.", a: "us" },
+        { q: "Open <b>the window</b>, please.", a: "it" },
+        { q: "Don't open <b>the windows</b>.", a: "them" },
+        { q: "I love <b>my parents</b>.", a: "them" },
+        { q: "She is calling <b>Peter</b>.", a: "him" },
+        { q: "He is kissing <b>his wife</b>.", a: "her" },
+        { q: "Listen to <b>the teacher</b> (female).", a: "her" },
+        { q: "Look at <b>that picture</b>.", a: "it" },
+        { q: "Play with <b>your brother</b>.", a: "him" },
+        { q: "Wait for <b>my friends</b>.", a: "them" },
+        { q: "This letter is for <b>my father</b>.", a: "him" }
+    ];
+
+    const section3Data = [
+        { q: "Tom is a nice guy. I like _____.", a: "him" },
+        { q: "I have a problem. Can you help _____?", a: "me" },
+        { q: "Those shoes are new. Do you like _____?", a: "them" },
+        { q: "Where is the remote? I can't find _____.", a: "it" },
+        { q: "We are hungry. Give _____ some food.", a: "us" },
+        { q: "She is beautiful. Look at _____.", a: "her" },
+        { q: "The boys are noisy. Tell _____ to be quiet.", a: "them" },
+        { q: "I want that bag. Please buy _____ for me.", a: "it" },
+        { q: "My dad is working. I am helping _____.", a: "him" },
+        { q: "Where do you live? We want to visit _____.", a: "you" },
+        { q: "I don't eat meat. I don't like _____.", a: "it" },
+        { q: "Grandma is here. Go and kiss _____.", a: "her" },
+        { q: "The police are coming. Can you see _____?", a: "them" },
+        { q: "It's my birthday! Sing to _____!", a: "me" },
+        { q: "You are very fast. I can't catch _____.", a: "you" },
+        { q: "My glasses are lost. I need _____.", a: "them" },
+        { q: "The dog is barking. Give _____ a bone.", a: "it" },
+        { q: "I miss you guys. I want to see _____.", a: "you" }, 
+        { q: "Paul and I are brothers. Do you know _____?", a: "us" },
+        { q: "Where is the station? I can't see _____.", a: "it" }
+    ];
+
+    // --- RENDERIZADO ---
+
+    function renderMC(data, containerId) {
+        const container = document.getElementById(containerId);
+        data.forEach((item, index) => {
+            let html = `
+                <div class="question-card" id="s1-q${index}">
+                    <p><b>${index + 1}.</b> ${item.q}</p>
+                    <div class="radio-group">`;
+            item.opts.forEach(opt => {
+                html += `<label><input type="radio" name="s1-q${index}" value="${opt}"> ${opt}</label>`;
+            });
+            html += `</div><span class="msg"></span></div>`;
+            container.innerHTML += html;
+        });
+    }
+
+    function renderDropdown(data, containerId) {
+        const container = document.getElementById(containerId);
+        const options = ["...", "me", "you", "him", "her", "it", "us", "them"];
+        
+        data.forEach((item, index) => {
+            let selectHTML = `<select id="s2-input-${index}">`;
+            options.forEach(opt => selectHTML += `<option value="${opt}">${opt}</option>`);
+            selectHTML += `</select>`;
+
+            container.innerHTML += `
+                <div class="question-card" id="s2-q${index}">
+                    <p><b>${index + 1}.</b> ${item.q}</p>
+                    <p>Replace with: ${selectHTML}</p>
+                    <span class="msg"></span>
+                </div>`;
+        });
+    }
+
+    function renderInput(data, containerId) {
+        const container = document.getElementById(containerId);
+        data.forEach((item, index) => {
+            // Reemplaza los guiones bajos visuales por el input real
+            let questionText = item.q.replace("_____", `<input type="text" id="s3-input-${index}" size="6">`);
+            
+            container.innerHTML += `
+                <div class="question-card" id="s3-q${index}">
+                    <p><b>${index + 1}.</b> ${questionText}</p>
+                    <span class="msg"></span>
+                </div>`;
+        });
+    }
+
+    // Inicializar
+    renderMC(section1Data, 'section1');
+    renderDropdown(section2Data, 'section2');
+    renderInput(section3Data, 'section3');
+
+    // --- LÓGICA DE CORRECCIÓN ---
+
+    function checkAll() {
+        let score = 0;
+        let total = section1Data.length + section2Data.length + section3Data.length;
+
+        // 1. Check Multiple Choice
+        section1Data.forEach((item, index) => {
+            const card = document.getElementById(`s1-q${index}`);
+            const msg = card.querySelector('.msg');
+            const selected = document.querySelector(`input[name="s1-q${index}"]:checked`);
+            
+            card.classList.remove('correct', 'incorrect');
+            
+            if (selected && selected.value === item.a) {
+                score++;
+                card.classList.add('correct');
+                msg.textContent = "✓ Correct";
+                msg.className = "msg msg-correct";
+            } else {
+                card.classList.add('incorrect');
+                msg.textContent = `✗ Answer: ${item.a}`;
+                msg.className = "msg msg-incorrect";
+            }
+        });
+
+        // 2. Check Dropdown
+        section2Data.forEach((item, index) => {
+            const card = document.getElementById(`s2-q${index}`);
+            const input = document.getElementById(`s2-input-${index}`);
+            const msg = card.querySelector('.msg');
+            
+            card.classList.remove('correct', 'incorrect');
+
+            if (input.value === item.a) {
+                score++;
+                card.classList.add('correct');
+                msg.textContent = "✓ Correct";
+                msg.className = "msg msg-correct";
+            } else {
+                card.classList.add('incorrect');
+                msg.textContent = `✗ Answer: ${item.a}`;
+                msg.className = "msg msg-incorrect";
+            }
+        });
+
+        // 3. Check Text Input
+        section3Data.forEach((item, index) => {
+            const card = document.getElementById(`s3-q${index}`);
+            const input = document.getElementById(`s3-input-${index}`);
+            const msg = card.querySelector('.msg');
+            
+            card.classList.remove('correct', 'incorrect');
+            
+            // Limpiar input del usuario
+            let val = input.value.trim().toLowerCase();
+
+            // Lógica especial para 'you' (singular/plural) y inputs vacíos
+            if (val === item.a) {
+                score++;
+                card.classList.add('correct');
+                msg.textContent = "✓ Correct";
+                msg.className = "msg msg-correct";
+            } else {
+                card.classList.add('incorrect');
+                msg.textContent = `✗ Answer: ${item.a}`;
+                msg.className = "msg msg-incorrect";
+            }
+        });
+
+        // Mostrar resultado final
+        const scoreDiv = document.getElementById('score');
+        scoreDiv.textContent = `Score: ${score} / ${total}`;
+        
+        if (score === total) {
+            scoreDiv.style.color = "var(--success)";
+            scoreDiv.textContent += " - PERFECT! 🏆";
+        } else if (score > total * 0.7) {
+            scoreDiv.style.color = "var(--primary)";
+            scoreDiv.textContent += " - Good job! 👍";
+        } else {
+            scoreDiv.style.color = "var(--error)";
+            scoreDiv.textContent += " - Keep practicing 💪";
+        }
+
+        document.getElementById('checkBtn').style.display = 'none';
+        document.getElementById('resetBtn').style.display = 'inline-block';
+        
+        // Scroll al resultado
+        document.querySelector('.controls').scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
